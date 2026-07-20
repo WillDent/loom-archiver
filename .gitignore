@@ -1,0 +1,19 @@
+# Loom auth secrets — treat like passwords, never commit
+auth_state.json
+.chrome-profile/
+*.cookies
+cookies.txt
+# Downloaded archive lives on the NAS, not in the repo
+loom-archive/
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+# OS
+.DS_Store
+
+# Local agent scratch — never part of the project
+.superpowers/
+.remember/
+.claude/settings.local.json

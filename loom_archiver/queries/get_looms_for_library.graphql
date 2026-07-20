@@ -1,0 +1,37 @@
+query GetLoomsForLibrary($limit: Int!, $cursor: String, $folderId: String, $sourceValue: String, $source: LoomsSource!, $sortType: LoomsSortType!, $sortOrder: LoomsSortOrder!, $sortGrouping: LoomsSortGrouping, $filters: [[LoomsCollectionFilter!]!], $timeRange: TimeRange) {
+  getLooms {
+    __typename
+    ... on GetLoomsPayload {
+      videos(
+        first: $limit
+        after: $cursor
+        folderId: $folderId
+        sourceValue: $sourceValue
+        source: $source
+        sortType: $sortType
+        sortOrder: $sortOrder
+        sortGrouping: $sortGrouping
+        filters: $filters
+        timeRange: $timeRange
+      ) {
+        edges {
+          cursor
+          node {
+            id
+            name
+            visibility
+            __typename
+          }
+          __typename
+        }
+        pageInfo {
+          endCursor
+          hasNextPage
+          __typename
+        }
+        __typename
+      }
+      __typename
+    }
+  }
+}

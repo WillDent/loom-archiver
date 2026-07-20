@@ -1,0 +1,54 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "loom-archiver"
+version = "0.1.0"
+description = "Archive your own Loom videos and transcripts to local storage."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+authors = [{ name = "Will Dent" }]
+keywords = ["loom", "archive", "backup", "video", "transcript", "export"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Environment :: Console",
+  "Intended Audience :: End Users/Desktop",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Multimedia :: Video",
+  "Topic :: System :: Archiving :: Backup",
+]
+dependencies = [
+  "httpx>=0.27",
+  "yt-dlp>=2024.0",
+]
+
+[project.optional-dependencies]
+auth = ["playwright>=1.44"]
+dev = ["pytest>=8.0", "respx>=0.21", "playwright>=1.44"]
+
+[project.scripts]
+loom-archiver = "loom_archiver.__main__:main"
+
+[project.urls]
+Homepage = "https://github.com/WillDent/loom-archiver"
+Issues = "https://github.com/WillDent/loom-archiver/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["loom_archiver"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+  "loom_archiver",
+  "tests",
+  "README.md",
+  "LICENSE",
+  "CHANGELOG.md",
+  "pyproject.toml",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

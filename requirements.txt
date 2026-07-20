@@ -1,0 +1,6 @@
+# Runtime dependencies. Test/dev deps live in the `dev` extra:
+#   pip install -e '.[dev]'
+# Browser login needs the `auth` extra:
+#   pip install -e '.[auth]'
+httpx>=0.27
+yt-dlp>=2024.0

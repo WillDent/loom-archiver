@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install
+        run: pip install -e '.[dev]'
+      - name: Test
+        run: pytest -q
+      - name: Seed private-path canaries
+        run: |
+          mkdir -p .remember .claude .superpowers
+          touch .remember/canary.md .claude/settings.local.json .superpowers/canary.md
+      - name: Build wheel and sdist
+        run: |
+          pip install build
+          python -m build --outdir dist
+      - name: Verify GraphQL queries are packaged
+        run: |
+          python - <<'PY'
+          import glob, zipfile
+          names = zipfile.ZipFile(glob.glob('dist/*.whl')[0]).namelist()
+          for q in ("get_looms_for_library.graphql", "get_published_folders.graphql"):
+              assert any(n.endswith(q) for n in names), f"{q} missing from wheel"
+          print("queries packaged OK")
+          PY
+      - name: Verify sdist excludes private local files
+        run: |
+          python - <<'PY'
+          import glob, tarfile
+          matches = glob.glob('dist/*.tar.gz')
+          assert matches, "no sdist found in dist/"
+          names = tarfile.open(matches[0]).getnames()
+          assert names, "sdist archive is empty"
+          leaked = [n for n in names if any(
+              part in (".remember", ".claude", ".superpowers")
+              for part in n.split("/")
+          )]
+          assert not leaked, f"sdist leaks private local files: {leaked[:10]}"
+          print("sdist excludes private files OK")
+          PY

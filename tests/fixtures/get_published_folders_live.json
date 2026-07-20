@@ -1,0 +1,114 @@
+{
+  "374f17d993c0487082126375401bc9ca": {
+    "getPublishedFolders": {
+      "__typename": "GetPublishedFoldersPayload",
+      "folders": {
+        "__typename": "RegularUserFolderConnection",
+        "edges": [],
+        "pageInfo": {
+          "__typename": "PageInfo",
+          "endCursor": "",
+          "hasNextPage": false
+        }
+      }
+    }
+  },
+  "a63ebe2d62ab4f839712dfc863cb19fb": {
+    "getPublishedFolders": {
+      "__typename": "GetPublishedFoldersPayload",
+      "folders": {
+        "__typename": "RegularUserFolderConnection",
+        "edges": [],
+        "pageInfo": {
+          "__typename": "PageInfo",
+          "endCursor": "",
+          "hasNextPage": false
+        }
+      }
+    }
+  },
+  "a7788d521a304f2d8f6cf2091e484f95": {
+    "getPublishedFolders": {
+      "__typename": "GetPublishedFoldersPayload",
+      "folders": {
+        "__typename": "RegularUserFolderConnection",
+        "edges": [],
+        "pageInfo": {
+          "__typename": "PageInfo",
+          "endCursor": "",
+          "hasNextPage": false
+        }
+      }
+    }
+  },
+  "f20c621a96fc408bb742592c9561cb0a": {
+    "getPublishedFolders": {
+      "__typename": "GetPublishedFoldersPayload",
+      "folders": {
+        "__typename": "RegularUserFolderConnection",
+        "edges": [
+          {
+            "__typename": "RegularUserFolderEdge",
+            "cursor": "YTc3ODhkNTIxYTMwNGYyZDhmNmNmMjA5MWU0ODRmOTU=",
+            "node": {
+              "__typename": "RegularUserFolder",
+              "id": "a7788d521a304f2d8f6cf2091e484f95",
+              "name": "sub-folder-md",
+              "visibility": "owner"
+            }
+          }
+        ],
+        "pageInfo": {
+          "__typename": "PageInfo",
+          "endCursor": "YTc3ODhkNTIxYTMwNGYyZDhmNmNmMjA5MWU0ODRmOTU=",
+          "hasNextPage": false
+        }
+      }
+    }
+  },
+  "null": {
+    "getPublishedFolders": {
+      "__typename": "GetPublishedFoldersPayload",
+      "folders": {
+        "__typename": "RegularUserFolderConnection",
+        "edges": [
+          {
+            "__typename": "RegularUserFolderEdge",
+            "cursor": "ZjIwYzYyMWE5NmZjNDA4YmI3NDI1OTJjOTU2MWNiMGE=",
+            "node": {
+              "__typename": "RegularUserFolder",
+              "id": "f20c621a96fc408bb742592c9561cb0a",
+              "name": "MD Turbines",
+              "visibility": "owner"
+            }
+          },
+          {
+            "__typename": "RegularUserFolderEdge",
+            "cursor": "YTYzZWJlMmQ2MmFiNGY4Mzk3MTJkZmM4NjNjYjE5ZmI=",
+            "node": {
+              "__typename": "RegularUserFolder",
+              "id": "a63ebe2d62ab4f839712dfc863cb19fb",
+              "name": "Artivo-Mkt",
+              "visibility": "owner"
+            }
+          },
+          {
+            "__typename": "RegularUserFolderEdge",
+            "cursor": "Mzc0ZjE3ZDk5M2MwNDg3MDgyMTI2Mzc1NDAxYmM5Y2E=",
+            "node": {
+              "__typename": "RegularUserFolder",
+              "id": "374f17d993c0487082126375401bc9ca",
+              "name": "AIDemos",
+              "visibility": "owner"
+            }
+          }
+        ],
+        "pageInfo": {
+          "__typename": "PageInfo",
+          "endCursor": "Mzc0ZjE3ZDk5M2MwNDg3MDgyMTI2Mzc1NDAxYmM5Y2E=",
+          "hasNextPage": false
+        }
+      }
+    }
+  }
+}

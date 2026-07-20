@@ -1,0 +1,36 @@
+query GetPublishedFolders($first: Int!, $after: String, $source: FolderSource!, $sourceValue: String, $sortType: LoomsSortType!, $sortOrder: LoomsSortOrder!, $parentFolderId: String, $workspaceId: ID, $filters: [LoomsCollectionFilter!]) {
+  getPublishedFolders {
+    __typename
+    ... on GetPublishedFoldersPayload {
+      folders(
+        first: $first
+        after: $after
+        source: $source
+        sourceValue: $sourceValue
+        sortType: $sortType
+        sortOrder: $sortOrder
+        parentFolderId: $parentFolderId
+        workspaceId: $workspaceId
+        filters: $filters
+      ) {
+        edges {
+          cursor
+          node {
+            id
+            name
+            visibility
+            __typename
+          }
+          __typename
+        }
+        pageInfo {
+          endCursor
+          hasNextPage
+          __typename
+        }
+        __typename
+      }
+      __typename
+    }
+  }
+}
