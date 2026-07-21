@@ -424,6 +424,20 @@ def test_sync_transcripts_passthrough_and_forwards_args(tmp_path, monkeypatch):
 # download_videos
 # ---------------------------------------------------------------------------
 
+@pytest.fixture
+def no_ffmpeg_check(monkeypatch):
+    """Neutralize the ffmpeg preflight gate.
+
+    download_videos checks `preflight.assert_ffmpeg()` before doing any real
+    work. Tests that exercise logic PAST that gate (target resolution,
+    disk_full, unknown_ids, force, folder matching, ...) must not depend on
+    whether the machine actually running the suite has ffmpeg installed --
+    CI runners don't. Only the dedicated ffmpeg_missing test should observe
+    the real (or a raising fake) assert_ffmpeg.
+    """
+    monkeypatch.setattr(tools.preflight, "assert_ffmpeg", lambda: None)
+
+
 def _make_pending_rows(n, folder="AIDemos", prefix="v"):
     rows = {}
     for i in range(n):
@@ -453,7 +467,7 @@ def test_download_videos_guardrail_too_many_blocks_everything(tmp_path, monkeypa
     assert result["max"] == 10
 
 
-def test_download_videos_force_bypasses_guardrail(tmp_path, monkeypatch):
+def test_download_videos_force_bypasses_guardrail(tmp_path, monkeypatch, no_ffmpeg_check):
     cfg = _cfg(tmp_path)
     rows = _make_pending_rows(20)
     ledger.write_ledger(_ledger_path(cfg), rows)
@@ -526,7 +540,7 @@ def test_download_videos_no_target_when_neither_ids_nor_folder(tmp_path, monkeyp
     }
 
 
-def test_download_videos_happy_path_by_ids(tmp_path, monkeypatch):
+def test_download_videos_happy_path_by_ids(tmp_path, monkeypatch, no_ffmpeg_check):
     cfg = _cfg(tmp_path)
     rows = {
         "a": ledger.new_row("a", "A", "main-library", "public", "https://x/a"),
@@ -559,7 +573,7 @@ def test_download_videos_happy_path_by_ids(tmp_path, monkeypatch):
     assert persisted["b"]["mp4_status"] == "done"
 
 
-def test_download_videos_disk_full_stops_and_persists_progress(tmp_path, monkeypatch):
+def test_download_videos_disk_full_stops_and_persists_progress(tmp_path, monkeypatch, no_ffmpeg_check):
     cfg = _cfg(tmp_path)
     rows = {
         "a": ledger.new_row("a", "A", "main-library", "public", "https://x/a"),
@@ -594,7 +608,7 @@ def test_download_videos_disk_full_stops_and_persists_progress(tmp_path, monkeyp
     assert persisted["a"]["mp4_status"] == "done"
 
 
-def test_download_videos_unknown_ids_reported_known_still_processed(tmp_path, monkeypatch):
+def test_download_videos_unknown_ids_reported_known_still_processed(tmp_path, monkeypatch, no_ffmpeg_check):
     cfg = _cfg(tmp_path)
     rows = {
         "a": ledger.new_row("a", "A", "main-library", "public", "https://x/a"),
@@ -622,7 +636,7 @@ def test_download_videos_unknown_ids_reported_known_still_processed(tmp_path, mo
     assert result["downloaded"] == 1
 
 
-def test_download_videos_disk_full_includes_unknown_ids_when_present(tmp_path, monkeypatch):
+def test_download_videos_disk_full_includes_unknown_ids_when_present(tmp_path, monkeypatch, no_ffmpeg_check):
     cfg = _cfg(tmp_path)
     rows = {
         "a": ledger.new_row("a", "A", "main-library", "public", "https://x/a"),
@@ -645,7 +659,7 @@ def test_download_videos_disk_full_includes_unknown_ids_when_present(tmp_path, m
     assert result["unknown_ids"] == ["does-not-exist"]
 
 
-def test_download_videos_folder_exact_match_not_prefix(tmp_path, monkeypatch):
+def test_download_videos_folder_exact_match_not_prefix(tmp_path, monkeypatch, no_ffmpeg_check):
     cfg = _cfg(tmp_path)
     rows = {
         "v1": ledger.new_row("v1", "One", "MD Turbines", "public", "https://x/v1"),
@@ -673,7 +687,7 @@ def test_download_videos_folder_exact_match_not_prefix(tmp_path, monkeypatch):
     assert result["requested"] == 1
 
 
-def test_download_videos_ids_force_redownloads_done_row(tmp_path, monkeypatch):
+def test_download_videos_ids_force_redownloads_done_row(tmp_path, monkeypatch, no_ffmpeg_check):
     cfg = _cfg(tmp_path)
     rows = {
         "a": ledger.new_row("a", "A", "main-library", "public", "https://x/a"),
@@ -708,7 +722,7 @@ def test_download_videos_ids_force_redownloads_done_row(tmp_path, monkeypatch):
     assert result["downloaded"] == 1
 
 
-def test_download_videos_folder_force_redownloads_done_rows(tmp_path, monkeypatch):
+def test_download_videos_folder_force_redownloads_done_rows(tmp_path, monkeypatch, no_ffmpeg_check):
     cfg = _cfg(tmp_path)
     rows = {
         "done1": ledger.new_row("done1", "Done", "AIDemos", "public", "https://x/done1"),
