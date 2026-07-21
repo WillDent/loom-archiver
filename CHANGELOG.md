@@ -5,6 +5,9 @@
 First public release.
 
 ### Added
+- Local MCP server so Claude can search/summarize transcripts, inventory and
+  list videos, and selectively download them. Install with the
+  `loom-archiver[mcp]` extra; runs as the `loom-archiver-mcp` entry point.
 - Recursive folder discovery via Loom's `GetPublishedFolders` operation, with
   cycle and depth guards and a cross-check for folders outside the walk.
 - Per-run summary of what was enumerated (loose count, folder count, per-folder counts).

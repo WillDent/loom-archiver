@@ -58,6 +58,57 @@ main-library pass and discover only videos inside folders). `--folders-only`
 scopes *discovery*, not processing: against a destination that already has a
 ledger, videos left pending from an earlier run are still processed.
 
+## Use with Claude (MCP)
+
+Drive your Loom library through Claude — search and summarize transcripts,
+list/inventory videos, and download selected ones — via a local MCP server.
+Full-library archiving is still a job for the `loom-archiver run` CLI.
+
+Install the extra:
+
+```bash
+pipx install 'loom-archiver[mcp]'
+# or: pip install 'loom-archiver[mcp]'
+```
+
+You still run `loom-archiver auth --dest ~/loom-archive` once first to sign
+in. The MCP server reuses that saved session and will tell you to run it if
+you're not signed in yet.
+
+Add it to Claude Desktop or Claude Code's MCP config:
+
+```json
+{
+  "mcpServers": {
+    "loom-archiver": {
+      "command": "loom-archiver-mcp",
+      "env": { "LOOM_ARCHIVER_DEST": "/Users/you/loom-archive" }
+    }
+  }
+}
+```
+
+With `pipx`, `command` may need the absolute path to the shim if Claude
+can't find it on PATH (`pipx list` or `which loom-archiver-mcp`). Add
+`LOOM_ARCHIVER_CONFIG_DIR` to the `env` block if your session lives in a
+non-default location.
+
+**What Claude can do:** check inventory and auth status, list/filter videos
+by folder or download status, search transcript text, read a transcript to
+summarize it, and download a specific set of videos.
+
+Two things worth knowing before you rely on this:
+
+- **Selective, not bulk.** `download_videos` refuses large batches (default
+  cap 10); the full 300GB-scale archive stays a CLI job. This is deliberate.
+- **Filter axes are limited.** You can filter by folder, transcript text,
+  and download status — but Loom's API exposes no video dates, durations, or
+  view counts, so Claude can't answer "my videos from last month" or "my
+  longest video."
+- **Prompt-injection note:** transcripts are your own recordings, returned to
+  Claude as data. The MCP exposes no destructive Loom operations (no
+  delete/move/share) — it can read, inventory, search, and download only.
+
 ## What you get
 
 ```
