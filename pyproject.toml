@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 license = "MIT"
 authors = [{ name = "Will Dent" }]
-keywords = ["loom", "archive", "backup", "video", "transcript", "export"]
+keywords = ["loom", "archive", "backup", "video", "transcript", "export", "mcp", "claude"]
 classifiers = [
   "Development Status :: 4 - Beta",
   "Environment :: Console",
@@ -28,10 +28,12 @@ dependencies = [
 
 [project.optional-dependencies]
 auth = ["playwright>=1.44"]
-dev = ["pytest>=8.0", "respx>=0.21", "playwright>=1.44"]
+mcp = ["mcp>=1.2", "anyio>=4.0"]
+dev = ["pytest>=8.0", "respx>=0.21", "playwright>=1.44", "mcp>=1.2", "anyio>=4.0"]
 
 [project.scripts]
 loom-archiver = "loom_archiver.__main__:main"
+loom-archiver-mcp = "loom_archiver.mcp.server:main"
 
 [project.urls]
 Homepage = "https://github.com/WillDent/loom-archiver"

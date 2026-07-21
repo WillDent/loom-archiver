@@ -14,7 +14,12 @@ def _dest_dir(cfg: Config, folder: str) -> Path:
     return cfg.dest_root / (folder or "main-library")
 
 
-def process_video(row: dict, api, http, cfg: Config) -> dict:
+def process_transcript(row: dict, api, http, cfg: Config) -> dict:
+    """Fetch+write this row's transcript, updating transcript_status/error in place.
+
+    done = written, unavailable = video has no transcript (not an error),
+    failed = genuine error. AuthError propagates (never swallowed).
+    """
     file_stem = stem(row["id"], row["name"])
     dest_dir = _dest_dir(cfg, row["folder"])
 
@@ -30,6 +35,14 @@ def process_video(row: dict, api, http, cfg: Config) -> dict:
         except Exception as e:  # noqa: BLE001 - record and continue
             row["transcript_status"] = "failed"
             row["error"] = f"transcript: {e}"
+    return row
+
+
+def process_video(row: dict, api, http, cfg: Config) -> dict:
+    file_stem = stem(row["id"], row["name"])
+    dest_dir = _dest_dir(cfg, row["folder"])
+
+    process_transcript(row, api, http, cfg)
 
     if row.get("mp4_status") != "done":
         try:
