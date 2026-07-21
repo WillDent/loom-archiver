@@ -179,6 +179,23 @@ def test_undecodable_file_does_not_abort_search(tmp_path):
     assert results  # good hit was returned despite the undecodable sibling file
 
 
+# any_transcripts: True when at least one .txt exists under dest_root
+def test_any_transcripts_true_when_txt_exists(tmp_path):
+    cfg = _build_corpus(tmp_path)
+    assert search.any_transcripts(cfg) is True
+
+
+def test_any_transcripts_false_for_empty_dest(tmp_path):
+    cfg = Config.default(tmp_path)
+    tmp_path.mkdir(parents=True, exist_ok=True)
+    assert search.any_transcripts(cfg) is False
+
+
+def test_any_transcripts_false_for_missing_dest_root(tmp_path):
+    cfg = Config.default(tmp_path / "does-not-exist")
+    assert search.any_transcripts(cfg) is False
+
+
 # 12: the query is matched as a literal substring, never compiled as a regex.
 def test_query_is_matched_literally_not_as_regex(tmp_path):
     cfg = Config.default(tmp_path)

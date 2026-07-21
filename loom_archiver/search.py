@@ -69,6 +69,18 @@ def search_transcripts(cfg: Config, query: str, *, folder: str | None = None,
     return hits[:limit]
 
 
+def any_transcripts(cfg: Config) -> bool:
+    """True if at least one .txt transcript exists under dest_root.
+
+    Mirrors how `search_transcripts` discovers files: missing dest_root is
+    False, and only `.txt` files count (never `.vtt`).
+    """
+    dest_root = Path(cfg.dest_root)
+    if not dest_root.exists():
+        return False
+    return next(dest_root.rglob("*.txt"), None) is not None
+
+
 def _make_snippet(text: str, text_lower: str, query_lower: str, query_len: int,
                    context_chars: int) -> str:
     first_idx = text_lower.find(query_lower)

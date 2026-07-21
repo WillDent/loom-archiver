@@ -112,15 +112,21 @@ async def list_videos(folder: str | None = None, status: str | None = None,
 
 
 @mcp.tool()
-async def search_transcripts(query: str, folder: str | None = None, limit: int = 20) -> list[dict]:
+async def search_transcripts(query: str, folder: str | None = None, limit: int = 20) -> dict:
     """Full-text search over archived transcripts for a literal, case-insensitive
     substring (not a regex, not fuzzy/semantic search).
 
     `folder`, if given, is an EXACT folder label match, not a prefix match.
-    Returns hits ranked by match count, each with an id, name, folder,
-    share_url, and a short snippet around the first match. This is the only
-    way to search video *content* -- there is no metadata search over dates,
-    duration, or descriptions, because none of that is recorded.
+    This is the only way to search video *content* -- there is no metadata
+    search over dates, duration, or descriptions, because none of that is
+    recorded.
+
+    Returns {"hits": [...], "count": N, "message"?: str}. Each hit has an id,
+    name, folder, share_url, and a short snippet around the first match,
+    ranked by match count. `message` is present only when `count` is 0: if
+    no transcripts have been synced to disk yet, it tells you to run
+    sync_transcripts (optionally scoped to a folder) first; otherwise it
+    just notes that no transcript matched the query.
     """
     return await _call(tools.search_transcripts, query, folder, limit)
 

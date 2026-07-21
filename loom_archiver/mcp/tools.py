@@ -129,9 +129,25 @@ def list_videos(cfg: Config, folder: str | None = None, status: str | None = Non
 
 
 def search_transcripts(cfg: Config, query: str, folder: str | None = None,
-                        limit: int = 20) -> list[dict]:
-    """Grep archived transcripts for a literal, case-insensitive query."""
-    return search_mod.search_transcripts(cfg, query, folder=folder, limit=limit)
+                        limit: int = 20) -> dict:
+    """Grep archived transcripts for a literal, case-insensitive query.
+
+    Returns {"hits": [...], "count": N} always; when there are no hits, adds
+    a "message" distinguishing "nothing synced yet" (hints sync_transcripts)
+    from "synced, but nothing matched this query" (no such hint).
+    """
+    hits = search_mod.search_transcripts(cfg, query, folder=folder, limit=limit)
+    result = {"hits": hits, "count": len(hits)}
+    if not hits:
+        if not search_mod.any_transcripts(cfg):
+            result["message"] = (
+                "No transcripts have been synced yet. Run sync_transcripts "
+                "(optionally scoped to a folder) to fetch transcript text -- this "
+                "downloads text only, no video -- then search again."
+            )
+        else:
+            result["message"] = f"No transcripts matched {query!r}."
+    return result
 
 
 def get_transcript(cfg: Config, video_id: str, max_chars: int | None = None) -> dict:

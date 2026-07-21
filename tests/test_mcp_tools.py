@@ -220,11 +220,39 @@ def test_search_transcripts_delegates_to_search_module(tmp_path):
         "v1": ledger.new_row("v1", "One", "main-library", "public", "https://x/v1"),
     })
 
-    results = tools.search_transcripts(cfg, "UniqueUniqueMarker")
+    result = tools.search_transcripts(cfg, "UniqueUniqueMarker")
 
-    assert len(results) == 1
-    assert results[0]["id"] == "v1"
-    assert results[0]["share_url"] == "https://x/v1"
+    assert result["count"] == 1
+    assert len(result["hits"]) == 1
+    assert result["hits"][0]["id"] == "v1"
+    assert result["hits"][0]["share_url"] == "https://x/v1"
+    assert "message" not in result
+
+
+def test_search_transcripts_no_transcripts_synced_hints_sync(tmp_path):
+    cfg = _cfg(tmp_path)
+
+    result = tools.search_transcripts(cfg, "anything")
+
+    assert result["count"] == 0
+    assert result["hits"] == []
+    assert "sync_transcripts" in result["message"]
+
+
+def test_search_transcripts_no_match_does_not_mention_sync(tmp_path):
+    cfg = _cfg(tmp_path)
+    _write(cfg.dest_root / "main-library" / "v1__One.txt",
+           "This transcript mentions something else entirely.")
+    ledger.write_ledger(_ledger_path(cfg), {
+        "v1": ledger.new_row("v1", "One", "main-library", "public", "https://x/v1"),
+    })
+
+    result = tools.search_transcripts(cfg, "NoSuchQueryAtAll")
+
+    assert result["count"] == 0
+    assert result["hits"] == []
+    assert "matched" in result["message"]
+    assert "sync_transcripts" not in result["message"]
 
 
 # ---------------------------------------------------------------------------
